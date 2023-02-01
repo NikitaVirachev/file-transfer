@@ -1,8 +1,10 @@
 #ifndef FILEMANAGER_H
 #define FILEMANAGER_H
 
+#include <QDateTime>
 #include <QDebug>
 #include <QDir>
+#include <QFileInfo>
 #include <QFuture>
 #include <QThread>
 #include <QTimer>
@@ -16,6 +18,7 @@ private:
   QString pathB;
   QString pathC;
   QTimer timerCopyFiles;
+  QTimer timerDeleteFiles;
 
 public:
   FileManager(QString pathA, QString pathB, QString pathC);
@@ -24,6 +27,7 @@ public:
 
 public slots:
   void copyFile();
+  void deleteOldFiles();
 };
 
 #endif // FILEMANAGER_H

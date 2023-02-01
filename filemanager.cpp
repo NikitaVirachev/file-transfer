@@ -10,6 +10,10 @@ void FileManager::run() {
   QObject::connect(&this->timerCopyFiles, SIGNAL(timeout()), this,
                    SLOT(copyFile()));
   this->timerCopyFiles.start(10000);
+
+  QObject::connect(&this->timerDeleteFiles, SIGNAL(timeout()), this,
+                   SLOT(deleteOldFiles()));
+  this->timerDeleteFiles.start(10000);
 }
 
 void FileManager::stop() { this->timerCopyFiles.stop(); }
@@ -29,4 +33,19 @@ void FileManager::copyFile() {
     }
   };
   QFuture<void> future = QtConcurrent::run(lambda, pathA, pathB, pathC);
+}
+
+void FileManager::deleteOldFiles() {
+  auto lambda = [](QString pathB) -> void {
+    QDir directory(pathB);
+    QStringList files = directory.entryList();
+    foreach (QString filename, files) {
+      QDateTime currentDate = QDateTime::currentDateTime();
+      QFileInfo fileInfo = QFileInfo(pathB + filename);
+      QDateTime birthFileDate = fileInfo.birthTime();
+      if (birthFileDate.daysTo(currentDate) > 14)
+        QFile::remove(pathB + filename);
+    }
+  };
+  QFuture<void> future = QtConcurrent::run(lambda, pathB);
 }
