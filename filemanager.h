@@ -3,17 +3,27 @@
 
 #include <QDebug>
 #include <QDir>
+#include <QFuture>
 #include <QThread>
+#include <QTimer>
+#include <QtConcurrent/QtConcurrent>
 
 class FileManager : public QObject {
   Q_OBJECT
 
+private:
+  QString pathA;
+  QString pathB;
+  QString pathC;
+  QTimer timerCopyFiles;
+
 public:
-  FileManager();
+  FileManager(QString pathA, QString pathB, QString pathC);
+  void run();
+  void stop();
 
 public slots:
-  static void copyFile(QString pathA, QString pathB, QString pathC);
-  static void hello();
+  void copyFile();
 };
 
 #endif // FILEMANAGER_H
